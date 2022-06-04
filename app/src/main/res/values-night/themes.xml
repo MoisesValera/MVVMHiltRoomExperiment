@@ -1,0 +1,7 @@
+<resources>
+    <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:colorBackground">@color/md_theme_dark_background</item>
+        <!--Status Bar Color-->
+        <item name="android:statusBarColor">@color/md_theme_dark_background</item>
+    </style>
+</resources>

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Random Restaurants</string>
+    <string name="information">%1$s - %2$s</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/restaurantsFragment">
+
+    <fragment
+        android:id="@+id/restaurantsFragment"
+        android:name="com.mevalera.mvvmhiltroomexperiment.presentation.restaurants.RestaurantsFragment"
+        tools:layout="@layout/fragment_restaurant" >
+        <action
+            android:id="@+id/action_restaurantsFragment_to_restaurantWebViewFragment"
+            app:destination="@id/restaurantWebViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/restaurantWebViewFragment"
+        android:name="com.mevalera.mvvmhiltroomexperiment.presentation.restaurants.RestaurantWebViewFragment"
+        tools:layout="@layout/fragment_restaurant_webview">
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
+</navigation>
