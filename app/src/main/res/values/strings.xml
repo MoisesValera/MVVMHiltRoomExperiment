@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Random Restaurants</string>
+    <string name="app_name">MVVMHiltRoom Experiment</string>
     <string name="information">%1$s - %2$s</string>
 </resources>
