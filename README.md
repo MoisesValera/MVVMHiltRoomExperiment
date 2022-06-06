@@ -26,11 +26,11 @@ There are a few ways to open this project.
 ### Android Studio
 
 1. `Android Studio` -> `File` -> `New` -> `From Version control` -> `Git`
-2. Enter `git@github.com:mevalera/MVVMHiltRoomExperiment.git` into URL field an press `Clone` button
+2. Enter `git@github.com:MoisesValera/MVVMHiltRoomExperiment.git` into URL field an press `Clone` button
    3, Build the project and run on an android device or emulator
 
 ### Command-line + Android Studio
 
-1. Run `git clone git@github.com:mevalera/MVVMHiltRoomExperiment.git` command to clone project
+1. Run `git clone git@github.com:MoisesValera/MVVMHiltRoomExperiment.git` command to clone project
 2. Open `Android Studio` and select `File | Open...` from the menu. Select cloned directory and press `Open` button
 3. Build the project and run on an android device or emulator
