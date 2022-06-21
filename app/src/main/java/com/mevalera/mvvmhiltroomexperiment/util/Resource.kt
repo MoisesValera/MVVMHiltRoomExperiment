@@ -1,6 +1,5 @@
 package com.mevalera.mvvmhiltroomexperiment.util
 
-
 sealed class Resource<T>(
     val data: T? = null,
     val error: Throwable? = null

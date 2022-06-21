@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="md_theme_light_onPrimary">#FFFFFF</color>
+    <color name="md_theme_light_Gray1">#F5F5F7</color>
     <color name="md_theme_light_onPrimaryContrast">#9BA7B3</color>
     <color name="md_theme_light_background">#FEFBFF</color>
     <color name="md_theme_dark_background">#1B1B1F</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <color name="inactiveIndicator">#DFE5EB</color>
+
+    <color name="gray1">#F5F5F7</color>
+    <color name="gray2">#DFE5EB</color>
+    <color name="gray3">#9BA7B3</color>
+    <color name="gray4">#5F6F80</color>
+    <color name="gray5">#162433</color>
 </resources>

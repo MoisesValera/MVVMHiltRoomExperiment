@@ -6,7 +6,6 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import javax.inject.Singleton
 
-
 @Suppress("DEPRECATION")
 @Singleton
 open class NetworkHelper(private val context: Context) {

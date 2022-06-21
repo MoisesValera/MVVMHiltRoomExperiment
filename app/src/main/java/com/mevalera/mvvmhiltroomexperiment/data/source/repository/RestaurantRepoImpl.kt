@@ -1,7 +1,8 @@
 package com.mevalera.mvvmhiltroomexperiment.data.source.repository
 
 import androidx.room.withTransaction
-import com.mevalera.mvvmhiltroomexperiment.data.model.HiddenRestaurants
+import com.mevalera.mvvmhiltroomexperiment.data.model.ConferenceWithBody
+import com.mevalera.mvvmhiltroomexperiment.data.model.FavoriteItems
 import com.mevalera.mvvmhiltroomexperiment.data.source.local.RestaurantDatabase
 import com.mevalera.mvvmhiltroomexperiment.data.source.remote.api.ApiService
 import com.mevalera.mvvmhiltroomexperiment.util.NetworkHelper
@@ -9,7 +10,6 @@ import com.mevalera.mvvmhiltroomexperiment.util.networkBoundResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
-
 
 class RestaurantRepoImpl @Inject constructor(
     private val api: ApiService,
@@ -19,17 +19,16 @@ class RestaurantRepoImpl @Inject constructor(
 
     private val restaurantDao = db.restaurantDao()
 
-    override suspend fun getRestaurants() = networkBoundResource(
+    override suspend fun getConferences() = networkBoundResource(
         query = {
-            restaurantDao.getAllRestaurants()
+            restaurantDao.getLastPublishedConferences()
         },
         fetch = {
-            api.getRestaurants()
+            api.getLastPublishedConferences()
         },
-        saveFetchResult = { result ->
+        saveFetchResult = { apiResult ->
             db.withTransaction {
-                restaurantDao.deleteAllRestaurants()
-                restaurantDao.insertRestaurants(result.hits)
+                restaurantDao.insertWithTimestamp(apiResult.result.conferencias)
             }
         },
         shouldFetch = {
@@ -39,12 +38,52 @@ class RestaurantRepoImpl @Inject constructor(
         }
     )
 
-    override suspend fun deleteRestaurant(story_id: Int): Flow<Unit> {
-        return flowOf(restaurantDao.deleteFromFeed(
-            HiddenRestaurants(
-                id = story_id
-            )
-        ))
-    }
+    override suspend fun getFilteredConferences(year: String, month: String) = networkBoundResource(
+        query = {
+            restaurantDao.getFilteredConferences(year + month)
+        },
+        fetch = {
+            api.getConferencesFiltered(year, month)
+        },
+        saveFetchResult = { apiResult ->
+            db.withTransaction {
+                restaurantDao.insertConferences(apiResult.result.conferencias)
+            }
+        },
+        shouldFetch = {
+            networkHelper.isNetworkAvailable()
+        },
+        onFetchFailed = {
+        }
+    )
 
+    override suspend fun getConferenceBody(id: Int) = networkBoundResource(
+        query = {
+            restaurantDao.getConferenceBody(id)
+        },
+        fetch = {
+            api.getConference(id)
+        },
+        saveFetchResult = { apiResult ->
+            db.withTransaction {
+                val conferenceWithBody = ConferenceWithBody(apiResult.result.conferences[0]._id!!,apiResult.result.conferences[0].body)
+                restaurantDao.insertConferenceBody(conferenceWithBody)
+            }
+        },
+        shouldFetch = {
+            networkHelper.isNetworkAvailable()
+        },
+        onFetchFailed = {
+        }
+    )
+
+    override suspend fun bookmarkConference(conference_id: Int): Flow<Unit> {
+        return flowOf(
+            restaurantDao.bookmarkItem(
+                FavoriteItems(
+                    id = conference_id
+                )
+            )
+        )
+    }
 }

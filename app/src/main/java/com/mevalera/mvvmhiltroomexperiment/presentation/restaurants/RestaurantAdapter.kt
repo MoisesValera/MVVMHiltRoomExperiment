@@ -5,12 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.mevalera.mvvmhiltroomexperiment.data.model.Restaurant
+import com.mevalera.mvvmhiltroomexperiment.data.model.Conference
 import com.mevalera.mvvmhiltroomexperiment.databinding.ItemRestaurantBinding
 
-
 class RestaurantAdapter :
-    ListAdapter<Restaurant, RestaurantAdapter.RestaurantViewHolder>(RestaurantComparator()) {
+    ListAdapter<Conference, RestaurantAdapter.RestaurantViewHolder>(RestaurantComparator()) {
 
     lateinit var itemClickListener: ClickEvent
 
@@ -26,17 +25,18 @@ class RestaurantAdapter :
         }
     }
 
-    fun updateItemRemoved(position: Int) {
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, itemCount)
+    fun submitAndUpdateList(list: List<Conference>) {
+        submitList(null)
+        submitList(list.toMutableList())
+        notifyDataSetChanged()
     }
 
     inner class RestaurantViewHolder(private val binding: ItemRestaurantBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Restaurant) {
+        fun bind(item: Conference) {
             binding.apply {
-                restaurant = item
+                conference = item
                 clickListener = itemClickListener
                 executePendingBindings()
             }
@@ -44,11 +44,11 @@ class RestaurantAdapter :
 
     }
 
-    class RestaurantComparator : DiffUtil.ItemCallback<Restaurant>() {
-        override fun areItemsTheSame(oldItem: Restaurant, newItem: Restaurant) =
-            oldItem.story_title == newItem.story_title
+    class RestaurantComparator : DiffUtil.ItemCallback<Conference>() {
+        override fun areItemsTheSame(oldItem: Conference, newItem: Conference) =
+            oldItem._id == newItem._id
 
-        override fun areContentsTheSame(oldItem: Restaurant, newItem: Restaurant) =
+        override fun areContentsTheSame(oldItem: Conference, newItem: Conference) =
             oldItem == newItem
     }
 }

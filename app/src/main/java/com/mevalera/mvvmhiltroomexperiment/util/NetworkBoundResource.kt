@@ -3,7 +3,6 @@ package com.mevalera.mvvmhiltroomexperiment.util
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.* // ktlint-disable no-wildcard-imports
 
-
 inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: () -> Flow<ResultType>,
     crossinline fetch: suspend () -> RequestType,

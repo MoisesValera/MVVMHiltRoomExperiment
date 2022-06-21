@@ -1,10 +1,12 @@
 package com.mevalera.mvvmhiltroomexperiment.util
 
-import android.text.format.DateUtils
+import android.content.res.Resources
 import android.view.View
-import java.text.SimpleDateFormat
-import java.util.*
-
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import timber.log.Timber
+import kotlin.math.roundToInt
 
 fun View.visible() {
     visibility = View.VISIBLE
@@ -14,8 +16,17 @@ fun View.gone() {
     visibility = View.GONE
 }
 
-fun String.formatDateTime(time: String): String {
-    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
-    val formatSdf = sdf.parse(time)
-    return DateUtils.getRelativeTimeSpanString(formatSdf?.time ?: 0).toString()
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+    observe(lifecycleOwner, object : Observer<T> {
+        override fun onChanged(t: T?) {
+            observer.onChanged(t)
+            removeObserver(this)
+        }
+    })
 }
+
+/*
+ DP to Pixels
+ */
+val Int.px: Int
+    get() = (this * Resources.getSystem().displayMetrics.density).roundToInt()

@@ -15,10 +15,10 @@
     </fragment>
     <fragment
         android:id="@+id/restaurantWebViewFragment"
-        android:name="com.mevalera.mvvmhiltroomexperiment.presentation.restaurants.RestaurantWebViewFragment"
+        android:name="com.mevalera.mvvmhiltroomexperiment.presentation.restaurants.conference_detail.RestaurantWebViewFragment"
         tools:layout="@layout/fragment_restaurant_webview">
         <argument
-            android:name="url"
-            app:argType="string" />
+            android:name="id"
+            app:argType="integer" />
     </fragment>
 </navigation>

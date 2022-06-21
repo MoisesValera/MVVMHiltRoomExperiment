@@ -6,29 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import com.mevalera.mvvmhiltroomexperiment.data.model.Restaurant
+import com.mevalera.mvvmhiltroomexperiment.data.model.Conference
 import com.mevalera.mvvmhiltroomexperiment.databinding.FragmentRestaurantBinding
+import com.mevalera.mvvmhiltroomexperiment.presentation.restaurants.filters_bottom_sheet.ConferencesFiltersBottomSheetFragment
 import com.mevalera.mvvmhiltroomexperiment.util.Resource
-import com.mevalera.mvvmhiltroomexperiment.util.SwipeToDeleteCallback
 import com.mevalera.mvvmhiltroomexperiment.util.gone
 import com.mevalera.mvvmhiltroomexperiment.util.visible
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
-
-
 
 @AndroidEntryPoint
 class RestaurantsFragment : Fragment() {
     private lateinit var binding: FragmentRestaurantBinding
-
-    private val viewModel by viewModels<RestaurantViewModel>()
+    private val viewModel: RestaurantViewModel by activityViewModels()
+    private lateinit var filtersBottomSheetFragment: ConferencesFiltersBottomSheetFragment
     private val restaurantAdapter by lazy {
         RestaurantAdapter()
     }
@@ -45,30 +41,22 @@ class RestaurantsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getRestaurants()
+        Timber.d("Imprimiendo viewCreated data")
         setupViews()
-        initListeners()
         initObservers()
+        initListeners()
     }
 
     private fun setupViews() = with(binding) {
         restaurantAdapter.itemClickListener = object : ClickEvent {
-            override fun onItemClick(restaurant: Restaurant?) {
-                restaurant?.let {
-                    Timber.d("${it.story_url}")
-                    if (!it.story_url.isNullOrEmpty()) {
-                        findNavController().navigate(
-                            RestaurantsFragmentDirections.actionRestaurantsFragmentToRestaurantWebViewFragment(
-                                it.story_url
-                            )
+            override fun onItemClick(conference: Conference?) {
+                conference?.let { conference ->
+                    Timber.d(conference._id.toString())
+                    findNavController().navigate(
+                        RestaurantsFragmentDirections.actionRestaurantsFragmentToRestaurantWebViewFragment(
+                            conference._id!!
                         )
-                    } else {
-                        Snackbar.make(
-                            restaurantsList,
-                            "This record doesn't have any URL",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                    }
+                    )
                 }
             }
         }
@@ -78,8 +66,19 @@ class RestaurantsFragment : Fragment() {
     private fun initListeners() = with(binding) {
         swipeRefreshLayout.setOnRefreshListener {
             lifecycleScope.launch {
-                viewModel.getRestaurants()
+                if (viewModel.yearFilter.value != null || viewModel.monthFilter.value != null) {
+                    viewModel.getFilteredConferences(
+                        viewModel.yearFilter.value.toString(),
+                        viewModel.monthFilter.value.toString()
+                    )
+                } else {
+                    viewModel.getConferences()
+                }
             }
+        }
+
+        filtersOptionsFab.setOnClickListener {
+            showBottomSheetArticles()
         }
     }
 
@@ -93,32 +92,9 @@ class RestaurantsFragment : Fragment() {
                     progressBar.isVisible = result.data.isNullOrEmpty()
                 }
                 is Resource.Success -> {
-                    val data = result.data
-
-                    data?.let {
-                        restaurantAdapter.submitList(it)
-                    }
-
                     progressBar.gone()
                     swipeRefreshLayout.isRefreshing = false
-
-                    val swipeHandler = object : SwipeToDeleteCallback(requireContext()) {
-                        override fun onSwiped(
-                            viewHolder: RecyclerView.ViewHolder,
-                            direction: Int
-                        ) {
-                            val position = viewHolder.layoutPosition
-                            viewModel.restaurants.value!!.data?.let { restaurantList ->
-                                viewModel.deleteRestaurant(restaurantList[position].story_id!!)
-                                val newList = restaurantList.toMutableList()
-                                newList.removeAt(position)
-                                restaurantAdapter.updateItemRemoved(viewHolder.adapterPosition)
-                            }
-                        }
-                    }
-
-                    val itemTouchHelper = ItemTouchHelper(swipeHandler)
-                    itemTouchHelper.attachToRecyclerView(restaurantsList)
+                    restaurantAdapter.submitAndUpdateList(result.data!!)
                 }
                 is Resource.Error -> {
                     progressBar.gone()
@@ -126,6 +102,19 @@ class RestaurantsFragment : Fragment() {
                     swipeRefreshLayout.isRefreshing = false
                 }
             }
+        }
+    }
+
+    private fun showBottomSheetArticles() {
+        filtersBottomSheetFragment =
+            ConferencesFiltersBottomSheetFragment()
+        filtersBottomSheetFragment.show(
+            childFragmentManager,
+            ConferencesFiltersBottomSheetFragment.TAG
+        )
+        filtersBottomSheetFragment.callbackChangeMade = {
+            Timber.d("Imprimiendo filters callback data")
+            viewModel.getFilteredConferences(it.year, it.getFormattedMonth())
         }
     }
 }

@@ -15,20 +15,18 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
-import com.google.android.material.imageview.ShapeableImageView
+import com.mevalera.mvvmhiltroomexperiment.R
 import com.mevalera.mvvmhiltroomexperiment.R.color
 
-
-
 @SuppressLint("CheckResult")
-@BindingAdapter("logo")
-fun ShapeableImageView.logo(
+@BindingAdapter("loadImageFromURL")
+fun ImageView.loadImageFromURL(
     url: String?
 ) {
     val placeholderParam = shimmerDrawable()
 
     @DrawableRes
-    val placeholderError = android.R.drawable.stat_notify_error
+    val placeholderError = R.drawable.lgccc_default_thumbnail
     val downloadSuccess: (() -> Unit)? = null
     val downloadError: ((Throwable) -> Unit)? = null
 
@@ -36,7 +34,7 @@ fun ShapeableImageView.logo(
     requestOptions.signature(ObjectKey(System.currentTimeMillis()))
 
     Glide.with(context)
-        .load(url)
+        .load(VULTRO_URL + url)
         .apply(requestOptions)
         .placeholder(placeholderParam)
         .error(placeholderError)
@@ -65,18 +63,15 @@ fun ShapeableImageView.logo(
         .into(this)
 }
 
-private const val BASE_ALPHA = 0.85f
-private const val SHIMMER_DURATION = 1000L
-
 private fun ImageView.shimmerDrawable(): ShimmerDrawable {
     val shimmer = Shimmer.ColorHighlightBuilder()
-        .setBaseColor(ContextCompat.getColor(this.context, color.md_theme_light_onPrimary))
+        .setBaseColor(ContextCompat.getColor(this.context, color.white))
         .setBaseAlpha(BASE_ALPHA)
         .setHighlightAlpha(BASE_ALPHA)
         .setHighlightColor(
             ContextCompat.getColor(
                 this.context,
-                color.md_theme_light_onPrimaryContrast
+                color.gray3
             )
         )
         .setDuration(SHIMMER_DURATION)
@@ -88,3 +83,7 @@ private fun ImageView.shimmerDrawable(): ShimmerDrawable {
     }
     return shimmerDrawable
 }
+
+private const val VULTRO_URL = "https://ewr1.vultrobjects.com/lgccc-conferences/"
+private const val BASE_ALPHA = 0.85f
+private const val SHIMMER_DURATION = 1000L

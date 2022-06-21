@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="restaurant"
-            type="com.mevalera.mvvmhiltroomexperiment.data.model.Restaurant" />
+            name="conference"
+            type="com.mevalera.mvvmhiltroomexperiment.data.model.Conference" />
         <variable
             name="clickListener"
             type="com.mevalera.mvvmhiltroomexperiment.presentation.restaurants.ClickEvent" />
@@ -16,18 +16,20 @@
         style="@style/Widget.Material3.CardView.Elevated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true"
-        android:onClick="@{()->clickListener.onItemClick(restaurant)}"
-        >
+        android:layout_margin="8dp"
+        android:onClick="@{()->clickListener.onItemClick(conference)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="4dp">
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_background"
+            app:layout_constraintBottom_toBottomOf="@+id/image_view_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_view_logo"
-                logo="@{restaurant.logo}"
+                loadImageFromURL="@{conference.thumbnail}"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_150sdp"
                 android:scaleType="centerCrop"
@@ -36,46 +38,58 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@mipmap/ic_launcher" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <TextView
+                android:id="@+id/text_view_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/nunito_sans_semibold"
+                android:text="@{conference.title}"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image_view_logo" />
+
+            <TextView
+                android:id="@+id/text_view_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/layout_background"
-                app:layout_constraintBottom_toBottomOf="@+id/image_view_logo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                android:fontFamily="@font/nunito_sans"
+                android:text="@{conference.location}"
+                android:textSize="@dimen/_9ssp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_name" />
 
-                <TextView
-                    android:id="@+id/text_view_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/nunito_sans_semibold"
-                    android:text="@{restaurant.story_title}"
-                    android:textSize="@dimen/_11ssp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Story title" />
+            <TextView
+                android:id="@+id/text_view_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/nunito_sans"
+                android:text="@{conference.nicedate}"
+                android:textSize="@dimen/_9ssp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_location"/>
 
-                <!--Todo - Concat method is not applying the proper space to the text-->
-
-                <TextView
-                    android:id="@+id/text_view_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:fontFamily="@font/nunito_sans"
-                    android:text="@{@string/information(restaurant.author, restaurant.formatDate)}"
-                    android:textSize="@dimen/_9ssp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/text_view_name"
-                    app:layout_constraintTop_toBottomOf="@id/text_view_name"
-                    tools:text="Author and Formatted Date" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/text_view_extras"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/nunito_sans"
+                android:text="@{@string/extras(conference.activity,conference.duration)}"
+                android:textSize="@dimen/_9ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_date" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
